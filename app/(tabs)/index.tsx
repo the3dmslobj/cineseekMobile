@@ -66,30 +66,29 @@ export default function Index() {
               tmdbTrendingError?.message}
           </Text>
         ) : (
-          <View className="flex-1 mt-8">
+          <View className="flex-1 mt-10">
             {tmdbTrendingMovies && <AutoCarousel movies={tmdbTrendingMovies} />}
 
             {trendingMovies && (
-              <View className="mt-5">
-                <Text className="text-lg text-white font-bold mt-5 mb3">
-                  Trending Movies
+              <View className="mt-8">
+                <Text className="text-2xl text-color4 font-ralewayBold mb3">
+                  Trending on Cineseek.
                 </Text>
+                <>
+                  <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    ItemSeparatorComponent={() => <View className="w-6" />}
+                    className="mb-4 mt-4"
+                    data={trendingMovies}
+                    renderItem={({ item, index }) => (
+                      <TrendingCard movie={item} index={index} />
+                    )}
+                    keyExtractor={(item) => item.movie_id.toString()}
+                  />
+                </>
               </View>
             )}
-
-            <>
-              <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                ItemSeparatorComponent={() => <View className="w-4" />}
-                className="mb-4 mt-3"
-                data={trendingMovies}
-                renderItem={({ item, index }) => (
-                  <TrendingCard movie={item} index={index} />
-                )}
-                keyExtractor={(item) => item.movie_id.toString()}
-              />
-            </>
 
             <>
               <Text className="text-lg text-white font-bold mt-5 mb-3">
