@@ -16,20 +16,20 @@ const SearchBar = ({
   onChangeText,
 }: PropsType) => {
   return (
-    <View className="flex-row items-center bg-dark-200 rounded-full px-5 py-4">
+    <View className="flex-row items-center bg-color1 rounded-xl px-5 py-4">
       <Image
         source={icons.search}
         className="size-5"
         resizeMode="contain"
-        tintColor="#ab8bff"
+        tintColor="#e6e6e6"
       />
       <TextInput
         onPress={onPress}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor="#a8b5db"
-        className="flex-1 ml-2 text-white"
+        placeholderTextColor="#e6e6e6"
+        className="flex-1 ml-3 text-white font-dm"
       />
     </View>
   );

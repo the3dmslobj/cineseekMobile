@@ -1,16 +1,14 @@
+import AutoCarousel from "@/components/AutoCarousel";
 import MovieCard from "@/components/MovieCard";
 import SearchBar from "@/components/SearchBar";
 import TrendingCard from "@/components/TrendingCard";
-import { icons } from "@/constants/icons";
-import { images } from "@/constants/images";
-import { fetchMovies } from "@/services/api";
+import { fetchMovies, fetchTmdbTrendingMovies } from "@/services/api";
 import { getTrendingMovies } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
 import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   ScrollView,
   Text,
   View,
@@ -31,31 +29,45 @@ export default function Index() {
     error: moviesError,
   } = useFetch(() => fetchMovies({ query: "" }));
 
+  const {
+    data: tmdbTrendingMovies,
+    loading: tmdbTrendingLoading,
+    error: tmdbTrendingError,
+  } = useFetch(fetchTmdbTrendingMovies);
+
   return (
-    <View className="flex-1 bg-primary">
-      <Image source={images.bg} className="absolute w-full z-0" />
+    <View className="flex-1 bg-color5">
+      <View className="px-5">
+        <Text className="mt-20 text-color1 font-dmBold text-4xl mb-3">
+          Cineseek
+        </Text>
+        <SearchBar
+          onPress={() => router.push("/search")}
+          placeholder="Search for a movie"
+        />
+      </View>
 
       <ScrollView
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
       >
-        <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
-
-        {moviesLoading || trendingLoading ? (
+        {moviesLoading || trendingLoading || tmdbTrendingLoading ? (
           <ActivityIndicator
             size="large"
             color="#0000ff"
             className="mt-10 self-center"
           />
-        ) : moviesError || trendingError ? (
-          <Text>Error : {moviesError?.message || trendingError?.message}</Text>
+        ) : moviesError || trendingError || tmdbTrendingError ? (
+          <Text>
+            Error :{" "}
+            {moviesError?.message ||
+              trendingError?.message ||
+              tmdbTrendingError?.message}
+          </Text>
         ) : (
-          <View className="flex-1 mt-5">
-            <SearchBar
-              onPress={() => router.push("/search")}
-              placeholder="Search for a movie"
-            />
+          <View className="flex-1 mt-8">
+            {tmdbTrendingMovies && <AutoCarousel movies={tmdbTrendingMovies} />}
 
             {trendingMovies && (
               <View className="mt-5">

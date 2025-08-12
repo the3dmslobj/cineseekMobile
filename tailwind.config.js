@@ -9,18 +9,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#030014",
-        secondary: "#151312",
-        light: {
-          100: "#D6C7FF",
-          200: "#A8B5DB",
-          300: "#9CA4AB",
-        },
-        dark: {
-          100: "221f3d",
-          200: "#0f0d23",
-        },
-        accent: "#AB8BFF",
+        color1: "#1f1f1f",
+        color2: "#8c8c8c",
+        color3: "#5c5c5c",
+        color4: "#e6e6e6",
+        color5: "#121212",
+      },
+
+      fontFamily: {
+        dm: ["DMSans_400Regular"],
+        dmBold: ["DMSans_700Bold"],
+        raleway: ["Raleway_400Regular"],
+        ralewayBold: ["Raleway_700Bold"],
       },
     },
   },

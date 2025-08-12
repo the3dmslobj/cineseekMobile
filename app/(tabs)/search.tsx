@@ -1,12 +1,10 @@
 import MovieCard from "@/components/MovieCard";
 import SearchBar from "@/components/SearchBar";
-import { icons } from "@/constants/icons";
-import { images } from "@/constants/images";
 import { fetchMovies } from "@/services/api";
 import { updateSearchCount } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 const search = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,12 +37,6 @@ const search = () => {
 
   return (
     <View className="flex-1 bg-primary">
-      <Image
-        source={images.bg}
-        className="flex-1 absolute z-0 w-full"
-        resizeMode="cover"
-      />
-
       <FlatList
         data={movies}
         renderItem={({ item }) => <MovieCard {...item} />}
@@ -62,10 +54,6 @@ const search = () => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <>
-            <View className="w-full flex-row justify-center mt-20 items-center">
-              <Image source={icons.logo} className="w-12 h-10" />
-            </View>
-
             <View className="my-5">
               <SearchBar
                 placeholder="Search movies..."
