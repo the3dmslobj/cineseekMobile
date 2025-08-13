@@ -1,36 +1,57 @@
 import { dateFormatter } from "@/utils";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Dimensions,
   FlatList,
   ImageBackground,
+  Pressable,
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
-
 export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlatList<MovieDetails> | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const resumeTimeoutRef = useRef<number | null>(null);
+  const { width } = useWindowDimensions(); // dynamic width
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      let nextIndex = currentIndex + 1;
-      if (nextIndex >= movies.length) nextIndex = 0;
-      setCurrentIndex(nextIndex);
-
-      flatListRef.current?.scrollToIndex({
-        animated: true,
-        index: nextIndex,
+  // start autoplay
+  const startAutoPlay = () => {
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const next = movies.length ? (prev + 1) % movies.length : 0;
+        if (movies.length) {
+          flatListRef.current?.scrollToIndex({ index: next, animated: true });
+        }
+        return next;
       });
-    }, 5000); // slide every 3 seconds
+    }, 5000);
+  };
 
-    return () => clearInterval(intervalId);
-  }, [currentIndex]);
+  // stop autoplay
+  const stopAutoPlay = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (!movies || movies.length === 0) return;
+    startAutoPlay();
+    return () => {
+      stopAutoPlay();
+    };
+  }, [movies.length, width]); // restart if number of items or width changes
 
   return (
     <View
@@ -43,24 +64,23 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={`/movies/${item.id}`}>
-            <View className="flex flex-col relative" style={{ width: width }}>
+          // Use Link asChild + Pressable so the Pressable receives the touch props
+          <Link href={`/movies/${item.id}`} asChild>
+            <Pressable
+              style={{ width, height: 220 }}
+              onPress={() => {
+                /* Link will handle navigation via asChild */
+              }}
+            >
               <ImageBackground
                 source={{
-                  uri: item.poster_path
+                  uri: item.backdrop_path
                     ? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
                     : "https://placehold.co/600x400/1a1a1a/ffffff.png",
                 }}
-                style={{
-                  width,
-                  height: 220,
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  alignSelf: "center",
-                }}
+                style={[styles.image, { width }]}
               >
                 <LinearGradient
                   colors={["transparent", "rgba(0,0,0,0.9)"]}
@@ -70,10 +90,11 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
                 />
               </ImageBackground>
 
-              <View className="w-ful h-full p-5 flex flex-col justify-between">
+              <View style={[styles.content, { width }]}>
                 <Text className="text-color4 text-2xl font-ralewayBold mr-20">
                   {item.title}
                 </Text>
+
                 <View>
                   <Text
                     className="text-color4 font-dmBold mb-8 text-lg mr-20"
@@ -94,14 +115,37 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
                   </Text>
                 </View>
               </View>
-            </View>
+            </Pressable>
           </Link>
         )}
+        // crucial: tells RN where each item sits (must match rendered width)
+        getItemLayout={(_, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
+        // make snapping consistent
+        snapToInterval={width}
+        snapToAlignment="start"
+        decelerationRate="fast"
+        onScrollBeginDrag={() => {
+          // user started swiping -> pause autoplay
+          stopAutoPlay();
+        }}
         onMomentumScrollEnd={(event) => {
           const newIndex = Math.round(
             event.nativeEvent.contentOffset.x / width
           );
           setCurrentIndex(newIndex);
+
+          // resume autoplay after a short delay
+          if (resumeTimeoutRef.current) {
+            clearTimeout(resumeTimeoutRef.current);
+            resumeTimeoutRef.current = null;
+          }
+          resumeTimeoutRef.current = setTimeout(() => {
+            startAutoPlay();
+          }, 3000) as unknown as number;
         }}
       />
     </View>
@@ -113,8 +157,15 @@ const styles = StyleSheet.create({
     height: 220,
   },
   image: {
-    width: width,
     height: 220,
+    position: "absolute",
+    top: 0,
+    left: 0,
     alignSelf: "center",
+  },
+  content: {
+    height: 220,
+    padding: 20,
+    justifyContent: "space-between",
   },
 });
