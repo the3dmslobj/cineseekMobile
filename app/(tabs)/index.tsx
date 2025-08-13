@@ -1,6 +1,5 @@
 import AutoCarousel from "@/components/AutoCarousel";
 import MovieCard from "@/components/MovieCard";
-import SearchBar from "@/components/SearchBar";
 import TrendingCard from "@/components/TrendingCard";
 import { fetchMovies, fetchTmdbTrendingMovies } from "@/services/api";
 import { getTrendingMovies } from "@/services/appwrite";
@@ -42,13 +41,8 @@ export default function Index() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
       >
-        <Text className="mt-20 text-color1 font-dmBold text-4xl mb-3">
-          Cineseek
-        </Text>
-        <SearchBar
-          onPress={() => router.push("/search")}
-          placeholder="Search for a movie"
-        />
+        <Text className="mt-20 text-color1 font-dmBold text-4xl">Cineseek</Text>
+
         {moviesLoading || trendingLoading || tmdbTrendingLoading ? (
           <ActivityIndicator
             size="large"

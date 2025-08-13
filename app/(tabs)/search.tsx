@@ -36,17 +36,17 @@ const search = () => {
   }, [movies]);
 
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1 bg-color5 px-5">
+      <Text className="mt-20 text-color1 font-dmBold text-4xl">Cineseek</Text>
       <FlatList
         data={movies}
         renderItem={({ item }) => <MovieCard {...item} />}
         keyExtractor={(item) => item.id.toString()}
-        className="px-3"
         numColumns={3}
         columnWrapperStyle={{
           justifyContent: "flex-start",
           gap: 16,
-          marginVertical: 16,
+          marginVertical: 10,
         }}
         contentContainerStyle={{
           paddingBottom: 100,
@@ -54,9 +54,9 @@ const search = () => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <>
-            <View className="my-5">
+            <View className="mt-6 mb-5">
               <SearchBar
-                placeholder="Search movies..."
+                placeholder="Search movies"
                 value={searchQuery}
                 onChangeText={(text: string) => setSearchQuery(text)}
               />
@@ -65,7 +65,7 @@ const search = () => {
             {moviesLoading && (
               <ActivityIndicator
                 size="large"
-                color="#0000ff"
+                color="#8c8c8c"
                 className="my-3"
               />
             )}
@@ -80,17 +80,17 @@ const search = () => {
               !moviesError &&
               searchQuery.trim() &&
               movies?.length > 0 && (
-                <Text className="text-xl text-white font-bold">
-                  Search Results for{"  "}
-                  <Text className="text-accent">{searchQuery}</Text>
+                <Text className="text-xl text-color2 font-bold mb-1">
+                  Search Results for{" "}
+                  <Text className="text-color4">{searchQuery}</Text>
                 </Text>
               )}
           </>
         }
         ListEmptyComponent={
           !moviesLoading && !moviesError ? (
-            <View className="mt-10 px-5">
-              <Text className="text-center text-gray-500">
+            <View className="mt-20 px-5">
+              <Text className="text-center text-color2 font-ralewayBold text-xl tracking-wide">
                 {searchQuery.trim() !== ""
                   ? "No Movies Found."
                   : "Search for a Movie."}
