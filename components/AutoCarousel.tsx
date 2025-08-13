@@ -63,6 +63,7 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
+        scrollEnabled={false}
         renderItem={({ item }) => (
           <Link href={`/movies/${item.id}`} asChild>
             <Pressable style={{ width, height: 220 }} onPress={() => {}}>
