@@ -32,7 +32,7 @@ const TrendingCard = ({
 
         <View className="absolute top-1 -right-2 bg-color5/70 px-2 py-1 rounded-lg flex flex-row items-center gap-1">
           <FontAwesome name="star" color="#e6e6e6" />
-          <Text className="text-white font-bold">
+          <Text className="text-color4 font-bold">
             {trendingMovies?.vote_average.toFixed(1)}
           </Text>
         </View>

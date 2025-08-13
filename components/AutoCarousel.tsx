@@ -16,10 +16,9 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
   const flatListRef = useRef<FlatList<MovieDetails> | null>(null);
   const intervalRef = useRef<number | null>(null);
   const resumeTimeoutRef = useRef<number | null>(null);
-  const { width } = useWindowDimensions(); // dynamic width
+  const { width } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // start autoplay
   const startAutoPlay = () => {
     if (intervalRef.current) return;
     intervalRef.current = setInterval(() => {
@@ -33,7 +32,6 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
     }, 5000);
   };
 
-  // stop autoplay
   const stopAutoPlay = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -51,7 +49,7 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
     return () => {
       stopAutoPlay();
     };
-  }, [movies.length, width]); // restart if number of items or width changes
+  }, [movies.length, width]);
 
   return (
     <View
@@ -66,14 +64,8 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          // Use Link asChild + Pressable so the Pressable receives the touch props
           <Link href={`/movies/${item.id}`} asChild>
-            <Pressable
-              style={{ width, height: 220 }}
-              onPress={() => {
-                /* Link will handle navigation via asChild */
-              }}
-            >
+            <Pressable style={{ width, height: 220 }} onPress={() => {}}>
               <ImageBackground
                 source={{
                   uri: item.backdrop_path
@@ -118,18 +110,15 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
             </Pressable>
           </Link>
         )}
-        // crucial: tells RN where each item sits (must match rendered width)
         getItemLayout={(_, index) => ({
           length: width,
           offset: width * index,
           index,
         })}
-        // make snapping consistent
         snapToInterval={width}
         snapToAlignment="start"
         decelerationRate="fast"
         onScrollBeginDrag={() => {
-          // user started swiping -> pause autoplay
           stopAutoPlay();
         }}
         onMomentumScrollEnd={(event) => {
@@ -138,7 +127,6 @@ export default function AutoCarousel({ movies }: { movies: MovieDetails[] }) {
           );
           setCurrentIndex(newIndex);
 
-          // resume autoplay after a short delay
           if (resumeTimeoutRef.current) {
             clearTimeout(resumeTimeoutRef.current);
             resumeTimeoutRef.current = null;

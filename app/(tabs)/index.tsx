@@ -37,7 +37,11 @@ export default function Index() {
 
   return (
     <View className="flex-1 bg-color5">
-      <View className="px-5">
+      <ScrollView
+        className="flex-1 px-5"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
+      >
         <Text className="mt-20 text-color1 font-dmBold text-4xl mb-3">
           Cineseek
         </Text>
@@ -45,17 +49,10 @@ export default function Index() {
           onPress={() => router.push("/search")}
           placeholder="Search for a movie"
         />
-      </View>
-
-      <ScrollView
-        className="flex-1 px-5"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
-      >
         {moviesLoading || trendingLoading || tmdbTrendingLoading ? (
           <ActivityIndicator
             size="large"
-            color="#0000ff"
+            color="#8c8c8c"
             className="mt-10 self-center"
           />
         ) : moviesError || trendingError || tmdbTrendingError ? (
@@ -66,12 +63,12 @@ export default function Index() {
               tmdbTrendingError?.message}
           </Text>
         ) : (
-          <View className="flex-1 mt-10">
+          <View className="flex-1 mt-8">
             {tmdbTrendingMovies && <AutoCarousel movies={tmdbTrendingMovies} />}
 
             {trendingMovies && (
               <View className="mt-8">
-                <Text className="text-2xl text-color4 font-ralewayBold mb3">
+                <Text className="text-2xl text-color4 font-ralewayBold">
                   Trending on Cineseek.
                 </Text>
                 <>
@@ -91,8 +88,8 @@ export default function Index() {
             )}
 
             <>
-              <Text className="text-lg text-white font-bold mt-5 mb-3">
-                Latest Movies.
+              <Text className="text-2xl text-color4 font-ralewayBold mb-3 mt-2">
+                New Releases.
               </Text>
 
               <FlatList
@@ -104,7 +101,7 @@ export default function Index() {
                   justifyContent: "flex-start",
                   gap: 20,
                   paddingRight: 5,
-                  marginBottom: 10,
+                  marginBottom: 20,
                 }}
                 className="mt-2 pb-32"
                 scrollEnabled={false}
