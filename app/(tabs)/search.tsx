@@ -3,11 +3,13 @@ import SearchBar from "@/components/SearchBar";
 import { fetchMovies } from "@/services/api";
 import { updateSearchCount } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 const search = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const {
     data: movies,
@@ -37,7 +39,12 @@ const search = () => {
 
   return (
     <View className="flex-1 bg-color5 px-5">
-      <Text className="mt-20 text-color1 font-dmBold text-4xl">Cineseek</Text>
+      <Text
+        className="mt-20 text-color1 font-dmBold text-4xl"
+        onPress={() => router.push("/")}
+      >
+        Cineseek
+      </Text>
       <FlatList
         data={movies}
         renderItem={({ item }) => <MovieCard {...item} />}
