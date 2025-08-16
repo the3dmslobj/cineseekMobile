@@ -19,6 +19,7 @@ module.exports = {
       fontFamily: {
         dm: ["DMSans_400Regular"],
         dmBold: ["DMSans_700Bold"],
+        dmSemi: ["DMSans_600SemiBold"],
         raleway: ["Raleway_400Regular"],
         ralewayBold: ["Raleway_700Bold"],
       },

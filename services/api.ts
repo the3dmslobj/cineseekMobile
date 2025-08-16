@@ -89,3 +89,32 @@ export const fetchTmdbTrendingMovies = async (): Promise<MovieDetails[]> => {
 
   return trendingDetails;
 };
+
+export const getDirector = async ({
+  tvOrSerie,
+  Id,
+}: {
+  tvOrSerie: string;
+  Id: string;
+}) => {
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/movie/${Id}/credits`;
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: TMDB_CONFIG.headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movies, ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const directors = data.crew
+    .filter(
+      (c: any) =>
+        c.known_for_department === "Directing" && c.department === "Directing"
+    )
+    .sort((a: any, b: any) => b.popularity - a.popularity);
+
+  return directors[0];
+};

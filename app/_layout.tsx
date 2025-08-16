@@ -1,5 +1,6 @@
 import {
   DMSans_400Regular,
+  DMSans_600SemiBold,
   DMSans_700Bold,
   useFonts as useDmSansFonts,
 } from "@expo-google-fonts/dm-sans";
@@ -16,6 +17,7 @@ export default function RootLayout() {
   const [dmSansLoaded] = useDmSansFonts({
     DMSans_400Regular,
     DMSans_700Bold,
+    DMSans_600SemiBold,
   });
 
   const [ralewayLoaded] = useRalewayFonts({
