@@ -1,4 +1,4 @@
-import { fetchMovieDetails, getDirector } from "@/services/api";
+import { fetchMovieDetails, getCasts, getDirector } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { dateFormatter } from "@/utils";
 import { FontAwesome } from "@expo/vector-icons";
@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -42,12 +43,21 @@ const movie = () => {
     error,
   } = useFetch(() => getDirector({ tvOrSerie: "movie", Id: id as string }));
 
+  const {
+    data: casts,
+    loading: castsLoading,
+    error: castsError,
+  } = useFetch(() => getCasts({ tvOrSerie: "movie", Id: id as string }));
+
   return (
     <View className="bg-color5 flex-1">
-      {loading && directorLoading ? (
+      {loading && directorLoading && castsLoading ? (
         <ActivityIndicator size="large" color="#8c8c8c" />
       ) : (
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 100 }}
+        >
           <View className="relative w-full h-[600px]">
             <Image
               source={{
@@ -64,7 +74,7 @@ const movie = () => {
             />
           </View>
 
-          <View className="flex-col items-start justify-center mt-5 px-5">
+          <View className="flex-col items-start justify-center px-5 z-10">
             <Text className="text-color4 font-bold text-4xl font-dmBold">
               {movie?.title}
             </Text>
@@ -105,7 +115,7 @@ const movie = () => {
             <View className="flex flex-row gap-16">
               <MovieInfo
                 label="Budget"
-                value={movie?.budget ? `$${movie.budget / 1000000} mil` : "N/A"}
+                value={movie?.budget ? `${movie.budget / 1000000} mil` : "N/A"}
               />
               <MovieInfo
                 label="Revenue"
@@ -126,6 +136,31 @@ const movie = () => {
             />
 
             <MovieInfo label="Director" value={director?.name} />
+
+            <Text className="text-color2 font-dmBold text-[24px] mt-6">
+              Casts
+            </Text>
+            <FlatList
+              horizontal
+              data={casts}
+              renderItem={({ item }) => (
+                <TouchableOpacity>
+                  <View className="h-fit w-[100px]">
+                    <Image
+                      className="w-[100px] h-[100px] rounded"
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/original${item?.profile_path}`,
+                      }}
+                    />
+                    <Text className="text-color4 font-dmSemi text-xl mt-2">
+                      {item.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ marginTop: 12, gap: 10 }}
+            />
           </View>
         </ScrollView>
       )}

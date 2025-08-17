@@ -118,3 +118,25 @@ export const getDirector = async ({
 
   return directors[0];
 };
+
+export const getCasts = async ({
+  tvOrSerie,
+  Id,
+}: {
+  tvOrSerie: string;
+  Id: string;
+}) => {
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/movie/${Id}/credits`;
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: TMDB_CONFIG.headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movies, ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.cast;
+};
