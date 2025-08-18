@@ -39,12 +39,6 @@ const search = () => {
 
   return (
     <View className="flex-1 bg-color5 px-5">
-      <Text
-        className="mt-20 text-color1 font-dmBold text-4xl"
-        onPress={() => router.push("/")}
-      >
-        Cineseek
-      </Text>
       <FlatList
         data={movies}
         renderItem={({ item }) => <MovieCard {...item} />}
@@ -61,6 +55,12 @@ const search = () => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <>
+            <Text
+              className="mt-20 text-color1 font-dmBold text-4xl"
+              onPress={() => router.push("/")}
+            >
+              Cineseek
+            </Text>
             <View className="mt-6 mb-5">
               <SearchBar
                 placeholder="Search movies"

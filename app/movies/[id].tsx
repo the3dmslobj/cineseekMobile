@@ -1,10 +1,11 @@
 import { fetchMovieDetails, getCasts, getDirector } from "@/services/api";
+import { getData, storeData } from "@/services/storage";
 import useFetch from "@/services/useFetch";
 import { dateFormatter } from "@/utils";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -32,6 +33,21 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 
 const movie = () => {
   const { id } = useLocalSearchParams();
+
+  const [watchlist, setWatchlist] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function loadWatchList() {
+      const value = await getData("watchlist");
+      if (value) setWatchlist(value);
+    }
+
+    loadWatchList();
+  }, []);
+
+  useEffect(() => {
+    storeData("watchlist", watchlist);
+  }, [watchlist]);
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id as string)
@@ -72,6 +88,33 @@ const movie = () => {
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFillObject}
             />
+            <TouchableOpacity
+              className="absolute top-16 left-5 bg-color1/70 rounded-full py-5 flex flex-row items-center justify-center z-50"
+              onPress={router.back}
+            >
+              <View className="px-[18px]">
+                <FontAwesome name="arrow-left" color="#ffffff" size={18} />
+              </View>
+            </TouchableOpacity>
+
+            {!watchlist?.includes(id as string) ? (
+              <TouchableOpacity
+                className="absolute top-16 right-5 bg-color1/70 rounded-full py-5 flex flex-row items-center justify-center z-50"
+                onPress={() => {
+                  setWatchlist((prev) => [...prev, id as string]);
+                }}
+              >
+                <View className="px-[20px]">
+                  <FontAwesome name="bookmark" color="#ffffff" size={18} />
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <View className="px-4 absolute top-16 right-5 bg-color1/70 rounded-full py-4 flex flex-row items-center justify-center z-50">
+                <Text className="text-color4 font-dmSemi text-xl">
+                  In Watchlist
+                </Text>
+              </View>
+            )}
           </View>
 
           <View className="flex-col items-start justify-center px-5 z-10">
@@ -173,13 +216,6 @@ const movie = () => {
           </View>
         </ScrollView>
       )}
-
-      <TouchableOpacity
-        className="absolute bottom-8 left-0 right-0 mx-10 bg-color1/95 rounded-lg py-5 flex flex-row items-center justify-center z-50"
-        onPress={router.back}
-      >
-        <FontAwesome name="arrow-left" color="#ffffff" size={15} />
-      </TouchableOpacity>
     </View>
   );
 };
