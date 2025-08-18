@@ -3,7 +3,7 @@ import useFetch from "@/services/useFetch";
 import { dateFormatter } from "@/utils";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
@@ -106,19 +106,19 @@ const movie = () => {
               </Text>
             </View>
 
-            <MovieInfo label="Overview" value={movie?.overview} />
+            <MovieInfo label="Overview." value={movie?.overview} />
             <MovieInfo
-              label="Genres"
+              label="Genres."
               value={movie?.genres.map((g) => g.name).join(", ") || "N/A"}
             />
 
             <View className="flex flex-row gap-16">
               <MovieInfo
-                label="Budget"
+                label="Budget."
                 value={movie?.budget ? `${movie.budget / 1000000} mil` : "N/A"}
               />
               <MovieInfo
-                label="Revenue"
+                label="Revenue."
                 value={
                   movie?.revenue
                     ? `${(Math.round(movie?.revenue) / 1000000).toFixed(2)} mil`
@@ -128,35 +128,37 @@ const movie = () => {
             </View>
 
             <MovieInfo
-              label="Production Companies"
+              label="Production Companies."
               value={
                 movie?.production_companies.map((c) => c.name).join(", ") ||
                 "N/A"
               }
             />
 
-            <MovieInfo label="Director" value={director?.name} />
+            <MovieInfo label="Director." value={director?.name} />
 
             <Text className="text-color2 font-dmBold text-[24px] mt-6">
-              Casts
+              Casts.
             </Text>
             <FlatList
               horizontal
               data={casts}
               renderItem={({ item }) => (
-                <TouchableOpacity>
-                  <View className="h-fit w-[100px]">
-                    <Image
-                      className="w-[100px] h-[100px] rounded"
-                      source={{
-                        uri: `https://image.tmdb.org/t/p/original${item?.profile_path}`,
-                      }}
-                    />
-                    <Text className="text-color4 font-dmSemi text-xl mt-2">
-                      {item.name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                <Link href={`/actors/${item.id}`} asChild>
+                  <TouchableOpacity>
+                    <View className="h-fit w-[100px]">
+                      <Image
+                        className="w-[100px] h-[100px] rounded"
+                        source={{
+                          uri: `https://image.tmdb.org/t/p/original${item?.profile_path}`,
+                        }}
+                      />
+                      <Text className="text-color4 font-dmSemi text-lg mt-2">
+                        {item.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </Link>
               )}
               keyExtractor={(item) => item.id}
               contentContainerStyle={{ marginTop: 12, gap: 10 }}

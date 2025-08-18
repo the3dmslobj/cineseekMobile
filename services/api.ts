@@ -140,3 +140,52 @@ export const getCasts = async ({
   const data = await response.json();
   return data.cast;
 };
+
+export const fetchCastDetails = async (id: string) => {
+  try {
+    const response = await fetch(
+      `${TMDB_CONFIG.BASE_URL}/person/${id}?api_key=${TMDB_CONFIG.API_KEY}`,
+      {
+        method: "GET",
+        headers: TMDB_CONFIG.headers,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch cast details");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getMoviesAppearedIn = async ({
+  castOrCrew,
+  Id,
+}: {
+  castOrCrew: string;
+  Id: string;
+}) => {
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/person/${Id}/movie_credits`;
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: TMDB_CONFIG.headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movies, ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  if (castOrCrew === "cast")
+    return data.cast.sort((a: any, b: any) => b.popularity - a.popularity);
+
+  return data.crew.sort((a: any, b: any) => b.popularity - a.popularity);
+};
+
+getMoviesAppearedIn({ castOrCrew: "cast", Id: "65731" });
