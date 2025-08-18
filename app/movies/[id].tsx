@@ -135,7 +135,14 @@ const movie = () => {
               }
             />
 
-            <MovieInfo label="Director." value={director?.name} />
+            <Text className="text-color2 font-dmBold text-[24px] mt-6">
+              Director.
+            </Text>
+            <Link href={`/directors/${director?.id}`}>
+              <Text className="text-color4 font-dmSemi text-xl mt-2">
+                {director?.name}
+              </Text>
+            </Link>
 
             <Text className="text-color2 font-dmBold text-[24px] mt-6">
               Casts.
