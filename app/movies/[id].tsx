@@ -46,7 +46,13 @@ const movie = () => {
   }, []);
 
   useEffect(() => {
-    storeData("watchlist", watchlist);
+    async function storeWatchList() {
+      if (watchlist.length !== 0) {
+        await storeData("watchlist", watchlist);
+      }
+    }
+
+    storeWatchList();
   }, [watchlist]);
 
   const { data: movie, loading } = useFetch(() =>

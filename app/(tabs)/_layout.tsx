@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 
 const TabIcon = ({ focused, icon, title }: any) => {
   return focused ? (
-    <View className="items-center justify-center w-[80px] mt-5 h-12 bg-color5 rounded-xl">
+    <View className="items-center justify-center w-[113px] mt-5 h-12 bg-color5 rounded-lg">
       <Text className="text-color4 tracking-wide font-semibold">{title}</Text>
     </View>
   ) : (
@@ -28,7 +28,7 @@ const _layout = () => {
         tabBarStyle: {
           backgroundColor: "#1f1f1f",
           borderRadius: 12,
-          marginHorizontal: 14,
+          marginHorizontal: 30,
           marginBottom: 32,
           height: 56,
           position: "absolute",
