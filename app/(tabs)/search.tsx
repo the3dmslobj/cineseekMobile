@@ -1,5 +1,5 @@
-import MovieCard from "@/components/MovieCard";
 import SearchBar from "@/components/SearchBar";
+import SearchMovieCard from "@/components/SearchMovieCard";
 import { fetchMoviesWPages } from "@/services/api";
 import { updateSearchCount } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
@@ -47,7 +47,7 @@ const search = () => {
       <FlatList
         ref={flatlistRef}
         data={data?.results}
-        renderItem={({ item }) => <MovieCard {...item} />}
+        renderItem={({ item }) => <SearchMovieCard {...item} />}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
         columnWrapperStyle={{
