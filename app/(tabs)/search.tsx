@@ -76,6 +76,10 @@ const search = () => {
                   moviesRefetch();
                   setCurrentPage(1);
                 }}
+                resetSearch={() => {
+                  setSearchQuery("");
+                  reset();
+                }}
               />
             </View>
 

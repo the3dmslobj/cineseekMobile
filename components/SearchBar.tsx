@@ -4,6 +4,7 @@ import {
   NativeSyntheticEvent,
   TextInput,
   TextInputSubmitEditingEventData,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -15,6 +16,7 @@ type PropsType = {
   onSubmitEditing?: (
     e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
   ) => void;
+  resetSearch?: () => void;
 };
 
 const SearchBar = ({
@@ -23,10 +25,11 @@ const SearchBar = ({
   value,
   onChangeText,
   onSubmitEditing,
+  resetSearch,
 }: PropsType) => {
   return (
     <View className="flex-row items-center bg-color1 rounded-xl px-4 py-3">
-      <FontAwesome name="search" color="#e6e6e6" size={15} />
+      <FontAwesome name="search" color="#e6e6e6" size={17} />
       <TextInput
         onPress={onPress}
         placeholder={placeholder}
@@ -39,6 +42,11 @@ const SearchBar = ({
         } items-center justify-center tracking-wide`}
         selectionColor="#e6e6e6"
       />
+      {value && (
+        <TouchableOpacity onPress={resetSearch}>
+          <FontAwesome name="times-circle" color="#e6e6e6" size={25} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
