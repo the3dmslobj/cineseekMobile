@@ -49,7 +49,7 @@ const Actor = () => {
       ) : (
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
         >
           <View className="relative w-full h-[600px]">
             <Image
@@ -65,6 +65,14 @@ const Actor = () => {
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFillObject}
             />
+            <TouchableOpacity
+              className="absolute top-16 left-5 bg-color1/70 rounded-full py-5 flex flex-row items-center justify-center z-50"
+              onPress={router.back}
+            >
+              <View className="px-[18px]">
+                <FontAwesome name="arrow-left" color="#ffffff" size={18} />
+              </View>
+            </TouchableOpacity>
           </View>
 
           <View className="flex-col items-start justify-center px-5 z-10">
@@ -141,13 +149,6 @@ const Actor = () => {
           </View>
         </ScrollView>
       )}
-
-      <TouchableOpacity
-        className="absolute bottom-8 left-0 right-0 mx-10 bg-color1/95 rounded-lg py-5 flex flex-row items-center justify-center z-50"
-        onPress={router.back}
-      >
-        <FontAwesome name="arrow-left" color="#ffffff" size={15} />
-      </TouchableOpacity>
     </View>
   );
 };

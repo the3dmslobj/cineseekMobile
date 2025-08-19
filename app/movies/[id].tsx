@@ -78,7 +78,7 @@ const movie = () => {
       ) : (
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
         >
           <View className="relative w-full h-[600px]">
             <Image
