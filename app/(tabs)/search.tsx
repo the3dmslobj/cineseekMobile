@@ -1,46 +1,52 @@
 import MovieCard from "@/components/MovieCard";
 import SearchBar from "@/components/SearchBar";
-import { fetchMovies } from "@/services/api";
+import { fetchMoviesWPages } from "@/services/api";
 import { updateSearchCount } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
+import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 
 const search = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
 
+  const flatlistRef = useRef<FlatList>(null);
+
   const {
-    data: movies,
+    data,
     loading: moviesLoading,
     error: moviesError,
     refetch: moviesRefetch,
     reset,
-  } = useFetch(() => fetchMovies({ query: searchQuery }), false);
+  } = useFetch(
+    () => fetchMoviesWPages({ query: searchQuery, page: currentPage }),
+    false
+  );
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
-      if (searchQuery.trim() !== "") {
-        await moviesRefetch();
-      } else {
-        reset();
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+    moviesRefetch();
+  }, [currentPage]);
 
   useEffect(() => {
-    if (movies?.length > 0 && movies?.[0]) {
-      updateSearchCount(searchQuery, movies[0]);
+    if (data?.results.length > 0 && data?.results[0]) {
+      updateSearchCount(searchQuery, data.results[0]);
     }
-  }, [movies]);
+  }, [data]);
 
   return (
     <View className="flex-1 bg-color5 px-5">
       <FlatList
-        data={movies}
+        ref={flatlistRef}
+        data={data?.results}
         renderItem={({ item }) => <MovieCard {...item} />}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
@@ -50,7 +56,7 @@ const search = () => {
           marginVertical: 10,
         }}
         contentContainerStyle={{
-          paddingBottom: 100,
+          paddingBottom: 120,
         }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
@@ -66,6 +72,10 @@ const search = () => {
                 placeholder="Search movies"
                 value={searchQuery}
                 onChangeText={(text: string) => setSearchQuery(text)}
+                onSubmitEditing={() => {
+                  moviesRefetch();
+                  setCurrentPage(1);
+                }}
               />
             </View>
 
@@ -86,10 +96,10 @@ const search = () => {
             {!moviesLoading &&
               !moviesError &&
               searchQuery.trim() &&
-              movies?.length > 0 && (
-                <Text className="text-xl text-color2 font-bold mb-1">
+              data?.results.length > 0 && (
+                <Text className="text-xl text-color2 font-dmSemi mb-1.5">
                   Search Results for{" "}
-                  <Text className="text-color4">{searchQuery}</Text>
+                  <Text className="text-color4 font-dmBold">{searchQuery}</Text>
                 </Text>
               )}
           </>
@@ -97,13 +107,113 @@ const search = () => {
         ListEmptyComponent={
           !moviesLoading && !moviesError ? (
             <View className="mt-20 px-5">
-              <Text className="text-center text-color2 font-ralewayBold text-xl tracking-wide">
+              <Text className="text-center text-color2 font-ralewaySemi text-xl tracking-wide">
                 {searchQuery.trim() !== ""
                   ? "No Movies Found."
                   : "Search for a Movie."}
               </Text>
             </View>
           ) : null
+        }
+        ListFooterComponent={
+          data &&
+          data.total_pages > 1 && (
+            <View className="flex flex-row justify-center items-center pt-2 mt-2">
+              {currentPage > 1 && (
+                <>
+                  <Pressable
+                    onPress={() => {
+                      setCurrentPage(1);
+                      flatlistRef.current?.scrollToOffset({
+                        offset: 0,
+                        animated: true,
+                      });
+                    }}
+                    className="w-10 h-10 mx-1 rounded flex items-center justify-center bg-transparent"
+                  >
+                    <FontAwesome
+                      name="angle-double-left"
+                      size={20}
+                      color="#666"
+                    />
+                  </Pressable>
+
+                  <Pressable
+                    onPress={() => {
+                      setCurrentPage(currentPage - 1);
+                      flatlistRef.current?.scrollToOffset({
+                        offset: 0,
+                        animated: true,
+                      });
+                    }}
+                    className="w-10 h-10 mx-1 rounded flex items-center justify-center bg-transparent"
+                  >
+                    <FontAwesome name="angle-left" size={20} color="#666" />
+                  </Pressable>
+                </>
+              )}
+
+              {Array.from({ length: 3 }, (_, i) => currentPage + i)
+                .filter((page) => page <= data.total_pages)
+                .map((page) => (
+                  <Pressable
+                    key={page}
+                    onPress={() => {
+                      setCurrentPage(page);
+                      flatlistRef.current?.scrollToOffset({
+                        offset: 0,
+                        animated: true,
+                      });
+                    }}
+                    className={`w-10 h-10 mx-1 rounded flex items-center justify-center ${
+                      page === currentPage ? "bg-color1" : "bg-transparent"
+                    }`}
+                  >
+                    <Text
+                      className={`text-lg font-bold ${
+                        page === currentPage ? "text-color4" : "text-color2"
+                      }`}
+                    >
+                      {page}
+                    </Text>
+                  </Pressable>
+                ))}
+
+              {currentPage < data.total_pages && (
+                <>
+                  <Pressable
+                    onPress={() => {
+                      setCurrentPage(currentPage + 1);
+                      flatlistRef.current?.scrollToOffset({
+                        offset: 0,
+                        animated: true,
+                      });
+                    }}
+                    className="w-10 h-10 mx-1 rounded flex items-center justify-center bg-transparent"
+                  >
+                    <FontAwesome name="angle-right" size={20} color="#666" />
+                  </Pressable>
+
+                  <Pressable
+                    onPress={() => {
+                      setCurrentPage(data.total_pages);
+                      flatlistRef.current?.scrollToOffset({
+                        offset: 0,
+                        animated: true,
+                      });
+                    }}
+                    className="w-10 h-10 mx-1 rounded flex items-center justify-center bg-transparent"
+                  >
+                    <FontAwesome
+                      name="angle-double-right"
+                      size={20}
+                      color="#666"
+                    />
+                  </Pressable>
+                </>
+              )}
+            </View>
+          )
         }
       />
     </View>

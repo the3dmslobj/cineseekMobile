@@ -188,4 +188,26 @@ export const getMoviesAppearedIn = async ({
   return data.crew.sort((a: any, b: any) => b.popularity - a.popularity);
 };
 
-getMoviesAppearedIn({ castOrCrew: "cast", Id: "65731" });
+export const fetchMoviesWPages = async ({
+  query,
+  page,
+}: {
+  query: string;
+  page: number;
+}) => {
+  const endpoint = `${
+    TMDB_CONFIG.BASE_URL
+  }/search/movie?query=${encodeURIComponent(query)}&page=${page}`;
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: TMDB_CONFIG.headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movies, ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+};

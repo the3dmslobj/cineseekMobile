@@ -6,6 +6,7 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import {
   Raleway_400Regular,
+  Raleway_600SemiBold,
   Raleway_700Bold,
   useFonts as useRalewayFonts,
 } from "@expo-google-fonts/raleway";
@@ -23,6 +24,7 @@ export default function RootLayout() {
   const [ralewayLoaded] = useRalewayFonts({
     Raleway_400Regular,
     Raleway_700Bold,
+    Raleway_600SemiBold,
   });
 
   const fontsLoaded = dmSansLoaded && ralewayLoaded;
@@ -45,6 +47,7 @@ export default function RootLayout() {
           name="directors/[crewId]"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
       </Stack>
     </>
   );

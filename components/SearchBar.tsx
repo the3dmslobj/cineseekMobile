@@ -1,12 +1,20 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { TextInput, View } from "react-native";
+import {
+  NativeSyntheticEvent,
+  TextInput,
+  TextInputSubmitEditingEventData,
+  View,
+} from "react-native";
 
 type PropsType = {
   onPress?: () => void;
   placeholder: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  onSubmitEditing?: (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+  ) => void;
 };
 
 const SearchBar = ({
@@ -14,6 +22,7 @@ const SearchBar = ({
   placeholder,
   value,
   onChangeText,
+  onSubmitEditing,
 }: PropsType) => {
   return (
     <View className="flex-row items-center bg-color1 rounded-xl px-4 py-3">
@@ -23,8 +32,11 @@ const SearchBar = ({
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
         placeholderTextColor="#e6e6e6"
-        className="flex-1 ml-3 text-white font-dmBold text-lg mb-1 items-center justify-center tracking-wide"
+        className={`flex-1 ml-3 text-white font-dmBold text-lg ${
+          value !== "" && "mb-2"
+        } items-center justify-center tracking-wide`}
         selectionColor="#e6e6e6"
       />
     </View>

@@ -22,6 +22,7 @@ module.exports = {
         dmSemi: ["DMSans_600SemiBold"],
         raleway: ["Raleway_400Regular"],
         ralewayBold: ["Raleway_700Bold"],
+        ralewaySemi: ["Raleway_600SemiBold"],
       },
     },
   },
