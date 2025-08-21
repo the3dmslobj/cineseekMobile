@@ -1,1 +1,1 @@
-my very first react-native app.
+my very first react-native app. 
