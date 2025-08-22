@@ -34,7 +34,9 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 const movie = () => {
   const { id } = useLocalSearchParams();
 
-  const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [watchlist, setWatchlist] = useState<{ id: string; isTv: boolean }[]>(
+    []
+  );
 
   useEffect(() => {
     async function loadWatchList() {
@@ -103,11 +105,14 @@ const movie = () => {
               </View>
             </TouchableOpacity>
 
-            {!watchlist?.includes(id as string) ? (
+            {!watchlist?.some((movie) => movie.id === id && !movie.isTv) ? (
               <TouchableOpacity
                 className="absolute top-16 right-5 bg-color1/70 rounded-full py-5 flex flex-row items-center justify-center z-50"
                 onPress={() => {
-                  setWatchlist((prev) => [...prev, id as string]);
+                  setWatchlist((prev) => [
+                    ...prev,
+                    { id: id as string, isTv: false },
+                  ]);
                 }}
               >
                 <View className="px-[20px]">
