@@ -191,13 +191,15 @@ export const getMoviesAppearedIn = async ({
 export const fetchMoviesWPages = async ({
   query,
   page,
+  tvOrMovie,
 }: {
   query: string;
   page: number;
+  tvOrMovie: boolean;
 }) => {
-  const endpoint = `${
-    TMDB_CONFIG.BASE_URL
-  }/search/movie?query=${encodeURIComponent(query)}&page=${page}`;
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/search/${
+    tvOrMovie ? "tv" : "movie"
+  }?query=${encodeURIComponent(query)}&page=${page}`;
 
   const response = await fetch(endpoint, {
     method: "GET",

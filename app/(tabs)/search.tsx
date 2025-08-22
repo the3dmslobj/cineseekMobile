@@ -1,5 +1,6 @@
 import SearchBar from "@/components/SearchBar";
 import SearchMovieCard from "@/components/SearchMovieCard";
+import SearchTvCard from "@/components/SearchTvCard";
 import { fetchMoviesWPages } from "@/services/api";
 import { updateSearchCount } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
@@ -30,7 +31,12 @@ const search = () => {
     refetch: moviesRefetch,
     reset,
   } = useFetch(
-    () => fetchMoviesWPages({ query: searchQuery, page: currentPage }),
+    () =>
+      fetchMoviesWPages({
+        query: searchQuery,
+        page: currentPage,
+        tvOrMovie: isTv,
+      }),
     false
   );
 
@@ -49,7 +55,9 @@ const search = () => {
       <FlatList
         ref={flatlistRef}
         data={data?.results}
-        renderItem={({ item }) => <SearchMovieCard {...item} />}
+        renderItem={({ item }) =>
+          !isTv ? <SearchMovieCard {...item} /> : <SearchTvCard {...item} />
+        }
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
         columnWrapperStyle={{
@@ -131,8 +139,8 @@ const search = () => {
             <View className="mt-20 px-5">
               <Text className="text-center text-color2 font-ralewaySemi text-xl tracking-wide">
                 {searchQuery.trim() !== ""
-                  ? "No Movies Found."
-                  : "Search for a Movie."}
+                  ? `No ${!isTv ? "Movies Found" : "Series Found"}.`
+                  : `Search for a ${!isTv ? "Movie" : "Serie"}.`}
               </Text>
             </View>
           ) : null

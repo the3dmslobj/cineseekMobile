@@ -76,3 +76,25 @@ interface TrendingCardProps {
   movie: TrendingMovie;
   index: number;
 }
+
+interface TVSeries {
+  id: number;
+  name: string; // title of the TV show
+  original_name: string; // original title
+  origin_country?: string[]; // array of country codes
+  original_language: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  backdrop_path: string;
+  first_air_date: string; // first episode air date
+  last_air_date?: string; // optional, last episode air date
+  genre_ids?: number[]; // optional array of genre IDs
+  vote_average: number;
+  vote_count: number;
+  in_production: boolean; // if the series is still running
+  number_of_episodes: number;
+  number_of_seasons: number;
+  tagline?: string;
+  episode_run_time?: number[]; // array of runtimes per episode
+}

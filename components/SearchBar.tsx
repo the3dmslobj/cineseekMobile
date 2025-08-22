@@ -37,9 +37,9 @@ const SearchBar = ({
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
         placeholderTextColor="#e6e6e6"
-        className={`flex-1 ml-3 text-white font-dmBold text-lg ${
-          value !== "" && "mb-2"
-        } items-center justify-center tracking-wide`}
+        className={`flex-1 ml-3 text-white font-dm text-lg items-center justify-center tracking-wide ${
+          value !== "" && "mb-1 -mt-1"
+        }`}
         selectionColor="#e6e6e6"
       />
       {value && (
