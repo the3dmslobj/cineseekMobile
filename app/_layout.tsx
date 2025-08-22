@@ -47,7 +47,6 @@ export default function RootLayout() {
           name="directors/[crewId]"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
       </Stack>
     </>
   );

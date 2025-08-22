@@ -28,7 +28,7 @@ const SearchBar = ({
   resetSearch,
 }: PropsType) => {
   return (
-    <View className="flex-row items-center bg-color1 rounded-xl px-4 py-3">
+    <View className="flex-row items-center bg-color1 rounded-xl px-4 py-3 flex-1">
       <FontAwesome name="search" color="#e6e6e6" size={17} />
       <TextInput
         onPress={onPress}

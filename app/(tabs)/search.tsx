@@ -21,6 +21,8 @@ const search = () => {
 
   const flatlistRef = useRef<FlatList>(null);
 
+  const [isTv, setIsTv] = useState<boolean>(false);
+
   const {
     data,
     loading: moviesLoading,
@@ -67,7 +69,7 @@ const search = () => {
             >
               Cineseek
             </Text>
-            <View className="mt-6 mb-5">
+            <View className="mt-6 mb-5 flex-row items-center gap-2">
               <SearchBar
                 placeholder="Search movies"
                 value={searchQuery}
@@ -81,6 +83,22 @@ const search = () => {
                   reset();
                 }}
               />
+              <Pressable
+                className="flex-row w-fit bg-color3 h-full items-center rounded-lg relative"
+                onPress={() => setIsTv(!isTv)}
+              >
+                <View className="py-3 pl-4 pr-2 w-fit">
+                  <Text className="font-dmBold">S</Text>
+                </View>
+                <View className="py-3 px-3 w-fit">
+                  <Text className="font-dmBold">M</Text>
+                </View>
+                <View
+                  className={`absolute bottom-1 top-1 ${
+                    !isTv ? "left-1 right-10" : "left-10 right-1"
+                  } bg-color1 rounded`}
+                ></View>
+              </Pressable>
             </View>
 
             {moviesLoading && (
