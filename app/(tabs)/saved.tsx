@@ -1,4 +1,4 @@
-import { fetchMovieDetails } from "@/services/api";
+import { fetchMovieDetails, fetchSerieDetails } from "@/services/api";
 import { getData, storeData } from "@/services/storage";
 import { FontAwesome } from "@expo/vector-icons";
 import { Link, useFocusEffect } from "expo-router";
@@ -14,8 +14,16 @@ import {
 } from "react-native";
 
 const saved = () => {
-  const [watchlist, setWatchlist] = useState<string[]>([]);
-  const [activeCard, setActiveCard] = useState<string>("");
+  const [watchlist, setWatchlist] = useState<
+    {
+      id: string;
+      isTv: boolean;
+    }[]
+  >([]);
+  const [activeCard, setActiveCard] = useState<{
+    id: string;
+    isTv: boolean;
+  } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useFocusEffect(
@@ -25,7 +33,7 @@ const saved = () => {
         if (value) setWatchlist(value);
       }
 
-      setActiveCard("");
+      setActiveCard(null);
 
       loadWatchList();
     }, [])
@@ -50,13 +58,18 @@ const saved = () => {
     storWatchList();
   }, [watchlist]);
 
-  const [movies, setMovies] = useState<MovieDetails[]>([]);
+  const [movies, setMovies] = useState<(MovieDetails | TVSeriesDetails)[]>([]);
 
   useEffect(() => {
     async function fetchMovies() {
       const fetchedMovies = await Promise.all(
-        watchlist.map(async (id) => {
-          const data = await fetchMovieDetails(id);
+        watchlist.map(async (item) => {
+          let data;
+          if (item.isTv) {
+            data = await fetchSerieDetails(item.id);
+          } else {
+            data = await fetchMovieDetails(item.id);
+          }
           return data;
         })
       );
@@ -92,16 +105,23 @@ const saved = () => {
               <TouchableOpacity
                 className="w-[30%] relative overflow-hidden"
                 onPress={() => {
-                  if (activeCard === item.id.toString()) {
-                    setActiveCard("");
+                  if (
+                    activeCard?.id === item.id.toString() &&
+                    activeCard.isTv === "name" in item
+                  ) {
+                    setActiveCard(null);
                   } else {
-                    setActiveCard(item.id.toString());
+                    setActiveCard({
+                      id: item.id.toString(),
+                      isTv: "name" in item,
+                    });
                   }
                 }}
               >
                 <View
                   className={`relative w-full ${
-                    activeCard === item.id.toString()
+                    activeCard?.id === item.id.toString() &&
+                    activeCard.isTv === "name" in item
                       ? "-translate-x-full"
                       : "translate-x-0"
                   }`}
@@ -125,7 +145,8 @@ const saved = () => {
 
                 <View
                   className={`absolute inset-0 ${
-                    activeCard === item.id.toString()
+                    activeCard?.id === item.id.toString() &&
+                    activeCard.isTv === "name" in item
                       ? "translate-x-0"
                       : "translate-x-full"
                   } items-center justify-center flex-col gap-4`}
@@ -134,10 +155,16 @@ const saved = () => {
                     className="font-dmBold text-lg text-color4 text-center"
                     numberOfLines={2}
                   >
-                    {item.title}
+                    {"name" in item ? item.name : item.title}
                   </Text>
 
-                  <Link href={`/movies/${item.id}`}>
+                  <Link
+                    href={
+                      "name" in item
+                        ? `/series/${item.id}`
+                        : `/movies/${item.id}`
+                    }
+                  >
                     <View
                       className="w-10 h-10 items-center border-2 justify-center
                  border-color4 rounded-full"
@@ -153,7 +180,13 @@ const saved = () => {
                   <TouchableOpacity
                     onPress={() => {
                       setWatchlist((prev) =>
-                        prev.filter((movie) => movie !== item.id.toString())
+                        prev.filter(
+                          (movie) =>
+                            !(
+                              movie.id === item.id.toString() &&
+                              movie.isTv === "name" in item
+                            )
+                        )
                       );
                     }}
                   >
