@@ -45,6 +45,11 @@ const search = () => {
   }, [currentPage]);
 
   useEffect(() => {
+    setCurrentPage(1);
+    moviesRefetch();
+  }, [isTv]);
+
+  useEffect(() => {
     if (data?.results.length > 0 && data?.results[0]) {
       updateSearchCount(searchQuery, data.results[0]);
     }
