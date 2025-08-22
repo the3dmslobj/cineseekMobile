@@ -98,3 +98,75 @@ interface TVSeries {
   tagline?: string;
   episode_run_time?: number[]; // array of runtimes per episode
 }
+
+interface TVSeriesDetails {
+  id: number;
+  name: string;
+  original_name: string;
+  overview: string | null;
+  genres: {
+    id: number;
+    name: string;
+  }[];
+  homepage: string | null;
+  original_language: string;
+  status: string; // "Returning Series", "Ended", etc.
+  tagline: string | null;
+  type: string; // "Scripted", "Reality", etc.
+  popularity: number;
+  vote_average: number;
+  vote_count: number;
+  in_production: boolean;
+  number_of_episodes: number;
+  number_of_seasons: number;
+  first_air_date: string;
+  last_air_date: string | null;
+  backdrop_path: string | null;
+  poster_path: string | null;
+  networks: {
+    id: number;
+    name: string;
+    logo_path: string | null;
+    origin_country: string;
+  }[];
+  production_companies: {
+    id: number;
+    logo_path: string | null;
+    name: string;
+    origin_country: string;
+  }[];
+  production_countries: {
+    iso_3166_1: string;
+    name: string;
+  }[];
+  spoken_languages: {
+    english_name: string;
+    iso_639_1: string;
+    name: string;
+  }[];
+  seasons: {
+    air_date: string | null;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string | null;
+    season_number: number;
+  }[];
+  next_episode_to_air?: {
+    id: number;
+    name: string;
+    overview: string;
+    air_date: string;
+    episode_number: number;
+    season_number: number;
+  } | null;
+  last_episode_to_air?: {
+    id: number;
+    name: string;
+    overview: string;
+    air_date: string;
+    episode_number: number;
+    season_number: number;
+  } | null;
+}

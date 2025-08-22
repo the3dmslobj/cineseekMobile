@@ -97,7 +97,7 @@ export const getDirector = async ({
   tvOrSerie: string;
   Id: string;
 }) => {
-  const endpoint = `${TMDB_CONFIG.BASE_URL}/movie/${Id}/credits`;
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/${tvOrSerie}/${Id}/credits`;
 
   const response = await fetch(endpoint, {
     method: "GET",
@@ -126,7 +126,7 @@ export const getCasts = async ({
   tvOrSerie: string;
   Id: string;
 }) => {
-  const endpoint = `${TMDB_CONFIG.BASE_URL}/movie/${Id}/credits`;
+  const endpoint = `${TMDB_CONFIG.BASE_URL}/${tvOrSerie}/${Id}/credits`;
 
   const response = await fetch(endpoint, {
     method: "GET",
@@ -212,4 +212,28 @@ export const fetchMoviesWPages = async ({
 
   const data = await response.json();
   return data;
+};
+
+export const fetchSerieDetails = async (
+  serieId: string
+): Promise<TVSeriesDetails> => {
+  try {
+    const response = await fetch(
+      `${TMDB_CONFIG.BASE_URL}/tv/${serieId}?api_key=${TMDB_CONFIG.API_KEY}`,
+      {
+        method: "GET",
+        headers: TMDB_CONFIG.headers,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch serie details");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

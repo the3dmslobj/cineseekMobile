@@ -47,6 +47,10 @@ export default function RootLayout() {
           name="directors/[crewId]"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="series/[serieId]"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </>
   );

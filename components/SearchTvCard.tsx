@@ -11,7 +11,7 @@ const SearchTvCard = ({
   first_air_date,
 }: TVSeries) => {
   return (
-    <Link href={`/movies/${id}`} asChild>
+    <Link href={`/series/${id}`} asChild>
       <TouchableOpacity className="w-[30%] relative">
         <Image
           source={{
