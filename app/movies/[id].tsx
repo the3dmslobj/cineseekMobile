@@ -1,8 +1,12 @@
-import { fetchMovieDetails, getCasts, getDirector } from "@/services/api";
+import {
+  getCastsQueryOptions,
+  getDirectorQueryOptions,
+  getMovieDetailsQueryOptions,
+} from "@/services/queryOptions";
 import { getData, storeData } from "@/services/storage";
-import useFetch from "@/services/useFetch";
 import { dateFormatter } from "@/utils";
 import { FontAwesome } from "@expo/vector-icons";
+import { useQueries } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -38,6 +42,8 @@ const movie = () => {
     []
   );
 
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
+
   useEffect(() => {
     async function loadWatchList() {
       const value = await getData("watchlist");
@@ -57,26 +63,24 @@ const movie = () => {
     storeWatchList();
   }, [watchlist]);
 
-  const { data: movie, loading } = useFetch(() =>
-    fetchMovieDetails(id as string)
-  );
-
-  const {
-    data: director,
-    loading: directorLoading,
-    error,
-  } = useFetch(() => getDirector({ tvOrSerie: "movie", Id: id as string }));
-
-  const {
-    data: casts,
-    loading: castsLoading,
-    error: castsError,
-  } = useFetch(() => getCasts({ tvOrSerie: "movie", Id: id as string }));
+  const [
+    { data: casts, isPending: castsLoading, error: castsError },
+    { data: director, isPending: directorLoading, error: directorError },
+    { data: movie, isPending: loading },
+  ] = useQueries({
+    queries: [
+      getCastsQueryOptions({ tvOrSerie: "movie", Id: id as string }),
+      getDirectorQueryOptions({ tvOrSerie: "movie", Id: id as string }),
+      getMovieDetailsQueryOptions(id as string),
+    ],
+  });
 
   return (
     <View className="bg-color5 flex-1">
-      {loading && directorLoading && castsLoading ? (
-        <ActivityIndicator size="large" color="#8c8c8c" />
+      {loading && directorLoading && castsLoading && imageLoading ? (
+        <View className="mt-20">
+          <ActivityIndicator size="small" color="#8c8c8c" />
+        </View>
       ) : (
         <ScrollView
           className="flex-1"
@@ -89,6 +93,8 @@ const movie = () => {
               }}
               className="w-full h-[600px]"
               resizeMode="cover"
+              onLoad={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
             />
             <LinearGradient
               colors={["transparent", "#121212"]}
