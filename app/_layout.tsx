@@ -10,6 +10,7 @@ import {
   Raleway_700Bold,
   useFonts as useRalewayFonts,
 } from "@expo-google-fonts/raleway";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import "./globals.css";
@@ -37,8 +38,10 @@ export default function RootLayout() {
     );
   }
 
+  const queryClient = new QueryClient();
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="movies/[id]" options={{ headerShown: false }} />
@@ -52,6 +55,6 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
       </Stack>
-    </>
+    </QueryClientProvider>
   );
 }

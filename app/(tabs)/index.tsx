@@ -1,9 +1,12 @@
 import AutoCarousel from "@/components/AutoCarousel";
 import MovieCard from "@/components/MovieCard";
 import TrendingCard from "@/components/TrendingCard";
-import { fetchMovies, fetchTmdbTrendingMovies } from "@/services/api";
-import { getTrendingMovies } from "@/services/appwrite";
-import useFetch from "@/services/useFetch";
+import {
+  fetchMoviesQueryOptions,
+  tmdbTrendingMoviesQueryOptions,
+  trendingMoviesQueryOptions,
+} from "@/services/queryOptions";
+import { useQueries } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
@@ -16,23 +19,21 @@ import {
 export default function Index() {
   const router = useRouter();
 
-  const {
-    data: trendingMovies,
-    loading: trendingLoading,
-    error: trendingError,
-  } = useFetch(getTrendingMovies);
-
-  const {
-    data: movies,
-    loading: moviesLoading,
-    error: moviesError,
-  } = useFetch(() => fetchMovies({ query: "" }));
-
-  const {
-    data: tmdbTrendingMovies,
-    loading: tmdbTrendingLoading,
-    error: tmdbTrendingError,
-  } = useFetch(fetchTmdbTrendingMovies);
+  const [
+    { data: trendingMovies, isPending: trendingLoading, error: trendingError },
+    { data: movies, isPending: moviesLoading, error: moviesError },
+    {
+      data: tmdbTrendingMovies,
+      isPending: tmdbTrendingLoading,
+      error: tmdbTrendingError,
+    },
+  ] = useQueries({
+    queries: [
+      trendingMoviesQueryOptions(),
+      fetchMoviesQueryOptions(""),
+      tmdbTrendingMoviesQueryOptions(),
+    ],
+  });
 
   return (
     <View className="flex-1 bg-color5">
